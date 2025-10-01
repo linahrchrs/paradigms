@@ -14,10 +14,13 @@ args = parser.parse_args()
 
 with create_connection(SERVER_ENDPOINT) as socket:
 
-    file_name = sys.argv[2]
+    #file_name = sys.argv[2] or
+    file_name = args.filename
 
-    if sys.argv[1] == "upload":
-        file_size = int(sys.argv[3])
+    #if sys.argv[1] == "upload": or
+    if args.function == "upload":
+        #file_size = int(sys.argv[3])
+        file_size = args.filesize
         with open(file_name, "rb") as file:
             file_bytes = file.read()
         header = f"upload {file_name} {file_size}\n"
@@ -27,9 +30,10 @@ with create_connection(SERVER_ENDPOINT) as socket:
         print(msg)
 
     
-    elif sys.argv[1] == "download":
-
-        header = f"{sys.argv[1]} {sys.argv[2]}\n".encode()
+    #elif sys.argv[1] == "download": or
+    elif args.function == "download":
+        #header = f"{sys.argv[1]} {sys.argv[2]}\n".encode() or
+        header = f"{args.function} {args.filename}\n".encode() 
         socket.send(header)
 
         msg = socket.recv(1024).decode().strip()

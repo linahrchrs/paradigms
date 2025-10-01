@@ -5,7 +5,7 @@ SERVER_ENDPOINT = ('', 7500)
 BUFFER = 4096
 
 with create_server(SERVER_ENDPOINT) as ss:
-    print(f"Server bound to Port {SERVER_ENDPOINT[1]}")
+    print("Server bound to Port", SERVER_ENDPOINT[1])
     while True:
         print("Server listening...")
         conn, client_endpoint = ss.accept()
