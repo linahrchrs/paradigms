@@ -38,11 +38,11 @@ with create_server(SERVER_ENDPOINT) as ss:
                             f.write(chunk)
                             remaining -= len(chunk)
                     if remaining == 0:
-                        conn.sendall(b"STORED\n")
+                        conn.sendall(f"STORED\n".encode())
                     else:
-                        conn.sendall(b"FAILED\n")
+                        conn.sendall(f"FAILED\n".encode())
                 except Exception:
-                    conn.sendall(b"FAILED\n")
+                    conn.sendall(f"FAILED\n".encode())
 
             else:
-                conn.sendall(b"FAILED\n")
+                conn.sendall(f"FAILED\n".encode())
