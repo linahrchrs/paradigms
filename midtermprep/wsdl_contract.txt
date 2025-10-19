@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="LogAnalysisService"
+             targetNamespace="http://loganalysis.example.com/"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:tns="http://loganalysis.example.com/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <!-- Type Definitions -->
+    <types>
+        <xsd:schema targetNamespace="http://loganalysis.example.com/">
+            
+            <!-- Count Request -->
+            <xsd:element name="countRequest">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="filename" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            
+            <!-- Count Response -->
+            <xsd:element name="countResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="total" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            
+            <!-- Status Request -->
+            <xsd:element name="statusRequest">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="filename" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            
+            <!-- Status Entry -->
+            <xsd:complexType name="StatusEntry">
+                <xsd:sequence>
+                    <xsd:element name="statusCode" type="xsd:string"/>
+                    <xsd:element name="count" type="xsd:int"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            
+            <!-- Status Response -->
+            <xsd:element name="statusResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="statusEntry" type="tns:StatusEntry" 
+                                     minOccurs="0" maxOccurs="unbounded"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            
+            <!-- Fault -->
+            <xsd:element name="FileNotFoundFault">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="filename" type="xsd:string"/>
+                        <xsd:element name="message" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:schema>
+    </types>
+
+    <!-- Messages -->
+    <message name="countRequestMsg">
+        <part name="parameters" element="tns:countRequest"/>
+    </message>
+    <message name="countResponseMsg">
+        <part name="parameters" element="tns:countResponse"/>
+    </message>
+    
+    <message name="statusRequestMsg">
+        <part name="parameters" element="tns:statusRequest"/>
+    </message>
+    <message name="statusResponseMsg">
+        <part name="parameters" element="tns:statusResponse"/>
+    </message>
+    
+    <message name="FileNotFoundFaultMsg">
+        <part name="fault" element="tns:FileNotFoundFault"/>
+    </message>
+
+    <!-- Port Type (Interface) -->
+    <portType name="LogAnalysisPortType">
+        <operation name="countRequests">
+            <input message="tns:countRequestMsg"/>
+            <output message="tns:countResponseMsg"/>
+            <fault name="FileNotFoundFault" message="tns:FileNotFoundFaultMsg"/>
+        </operation>
+        
+        <operation name="statusDistribution">
+            <input message="tns:statusRequestMsg"/>
+            <output message="tns:statusResponseMsg"/>
+            <fault name="FileNotFoundFault" message="tns:FileNotFoundFaultMsg"/>
+        </operation>
+    </portType>
+
+    <!-- Binding -->
+    <binding name="LogAnalysisBinding" type="tns:LogAnalysisPortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        
+        <operation name="countRequests">
+            <soap:operation soapAction="http://loganalysis.example.com/countRequests"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="FileNotFoundFault">
+                <soap:fault name="FileNotFoundFault" use="literal"/>
+            </fault>
+        </operation>
+        
+        <operation name="statusDistribution">
+            <soap:operation soapAction="http://loganalysis.example.com/statusDistribution"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="FileNotFoundFault">
+                <soap:fault name="FileNotFoundFault" use="literal"/>
+            </fault>
+        </operation>
+    </binding>
+
+    <!-- Service -->
+    <service name="LogAnalysisService">
+        <port name="LogAnalysisPort" binding="tns:LogAnalysisBinding">
+            <soap:address location="http://localhost:7500/loganalysis"/>
+        </port>
+    </service>
+</definitions>
